@@ -16,10 +16,40 @@ double getDouble(string str)
 
 int main()
 {
-    string str = "73287686626876";
-    double d = getDouble(str);
-    cout << d << endl;
+    vector<vector<int>> edges = {{0, 1}, {0, 3}, {1, 2}, {3, 2}};
+    map<int, set<int>> adj_list;
+    for (int i = 0; i < edges.size(); i++)
+    {
+        vector<int> edge = edges[i];
+        adj_list[edge[0]].insert(edge[1]);
+        adj_list[edge[1]].insert(edge[0]);
+    }
+    for (auto ele : adj_list)
+    {
+        cout << ele.first << ": ";
+        for (auto val : adj_list[ele.first])
+            cout << val << " ";
+        cout << endl;
+    }
 }
+
+/*
+int main()
+{
+    vector<vector<int>> edges = {{0,1},{0,3},{1,2},{3,2}};
+    map<int,set<int>> adj_list;
+    for(int i=0; i< edges.size(); i++){
+        vector<int> edge = edges[i];
+        adj_list[edge[0]].insert(edge[1]);
+    }
+    for(auto ele: adj_list){
+        cout << ele.first << ": ";
+        for(auto val: adj_list[ele.first])
+            cout << val << " ";
+        cout << endl;
+    }
+}
+*/
 
 /*
 int main()

@@ -6,6 +6,13 @@
 
 using namespace std;
 
+void print(vector<int> v)
+{
+    for (int i = 0; i < v.size(); i++)
+        cout << v[i] << " ";
+    cout << endl;
+}
+
 void bubbleSort(vector<int> &a, int n)
 {
     for (int i = 0; i < n - 1; i++)
@@ -104,47 +111,43 @@ void mergeSort(vector<int> &a)
         a[i] = res[i];
 }
 
-vector<int> heapSort(vector<int> &arr)
+void heapSort(vector<int> &arr, int start, int end)
 {
-    int n = arr.size();
-    if (n <= 1)
-        return arr;
-    int i = 0, j = n - 1;
-    int pivotEle = arr[0];
-    for (int k = 1; k < n; k++)
+    if (end - start <= 1)
+        return;
+    int pivotEle = arr[start];
+    int yellow = start, green = end;
+    for (int k = start; k <= end; k++)
     {
+        while (yellow <= end && arr[yellow] <= pivotEle)
+            yellow++;
+
+        while (green>=0 && arr[green] >= pivotEle)
+            green--;
+
         if (arr[k] <= pivotEle)
         {
-            swap(arr[i], arr[k]);
-            i++;
+            swap(arr[yellow], arr[k]);
+            yellow++;
         }
         else
         {
-            swap(arr[j], arr[k]);
-            j--;
+            swap(arr[green], arr[k]);
+            green--;
         }
     }
-    arr[i] = pivotEle;
-    vector<int> leftArr(arr.begin(), arr.begin() + i);
-    vector<int> rightArr(arr.begin() + i, arr.end());
-    vector<int> left = heapSort(leftArr);
-    vector<int> right = heapSort(rightArr);
-    return mergeArray(left, right);
+    swap(pivotEle, arr[green]);
+    heapSort(arr, 0, green - 1);
+    heapSort(arr, green + 1, end);
 }
-void print(vector<int> v)
-{
-    for (int i = 0; i < v.size(); i++)
-        cout << v[i] << " ";
-    cout << endl;
-}
-
 int main()
 {
-    vector<int> arr = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+    // vector<int> arr = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+    vector<int> arr = {3, 89, 78, 6, 0, 3265, 776, 9};
     // bubbleSort(arr, arr.size());
     // selectionSort(arr, arr.size());
     // insertionSort(arr, arr.size());
     // mergeSort(arr);
-    vector<int> res = heapSort(arr);
-    print(res);
+    heapSort(arr, 0, arr.size() - 1);
+    print(arr);
 }
