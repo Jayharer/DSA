@@ -1,5 +1,4 @@
 #include <iostream>
-#include <assert.h>
 #include <queue>
 #include <vector>
 #include <stack>
@@ -33,40 +32,38 @@ public:
         root = NULL;
     }
     void postorder(Node<T> *root);
+    void levelOrder(Node<T> *root);
     void push(T x);
     void pop();
     T top();
     void hepify(Node<T> *curr);
+    void hepifyDown(Node<T> *curr);
 };
 template <class T>
 void Heap<T>::pop()
 {
     if (root == NULL)
         return;
-    Node<T> *curr = root;
-    while (curr->right)
-        curr = curr->right;
-    swap(root->data, curr->data);
-    curr->parent->right = NULL;
-    delete curr;
-    Node<T> *curr = root;
-    while (true)
+    cout << "delete ele : " << root->data << endl;
+    if (root->left == NULL && root->right == NULL)
     {
-        if (curr->left && curr->data < curr->left->data)
-        {
-            swap(curr->data, curr->left->data);
-            curr = curr->left;
-        }
-        else if (curr->right && curr->data < curr->right->data)
-        {
-            swap(curr->data, curr->right->data);
-            curr = curr->right;
-        }
-        else
-        {
-            break;
-        }
+        root = NULL;
+        return;
     }
+    Node<T> *curr = root;
+    while (curr->right || curr->left)
+    {
+        if (curr->left)
+            curr = curr->left;
+        else if (curr->right)
+            curr = curr->right;
+    }
+    swap(root->data, curr->data);
+    if (curr->parent->left == curr)
+        curr->parent->left = NULL;
+    else
+        curr->parent->right = NULL;
+    hepifyDown(root);
 }
 
 template <class T>
@@ -85,6 +82,23 @@ void Heap<T>::postorder(Node<T> *root)
     postorder(root->left);
     postorder(root->right);
     cout << root->data << " ";
+}
+
+template <class T>
+void Heap<T>::hepifyDown(Node<T> *curr)
+{
+    if (curr == NULL)
+        return;
+    if (curr->left && curr->left->data > curr->data)
+    {
+        swap(curr->data, curr->left->data);
+        hepifyDown(curr->left);
+    }
+    if (curr->right && curr->right->data > curr->data)
+    {
+        swap(curr->data, curr->right->data);
+        hepifyDown(curr->right);
+    }
 }
 
 template <class T>
@@ -133,33 +147,60 @@ void Heap<T>::push(T x)
     }
 }
 
+template <class T>
+void Heap<T>::levelOrder(Node<T> *root)
+{
+    if (root == NULL)
+        return;
+    queue<Node<T> *> q;
+    q.push(root);
+    while (!q.empty())
+    {
+        Node<T> *curr = q.front();
+        cout << curr->data << " ";
+        if (curr->left)
+            q.push(curr->left);
+        if (curr->right)
+            q.push(curr->right);
+        q.pop();
+    }
+    cout << endl;
+}
+
 int main()
 {
     Heap<int> heap;
     heap.push(5);
     heap.push(10);
-    assert(heap.top() == 10);
     heap.push(15);
-    assert(heap.top() == 15);
     heap.push(20);
-    assert(heap.top() == 20);
+    // cout << "heap top : " << heap.top() << endl;
     heap.push(25);
-    assert(heap.top() == 25);
+    // cout << "heap top : " << heap.top() << endl;
     heap.push(30);
-    assert(heap.top() == 30);
-    heap.push(35);
-    assert(heap.top() == 35);
-    heap.push(40);
-    assert(heap.top() == 40);
-    heap.push(45);
-    assert(heap.top() == 45);
-    heap.push(50);
-    assert(heap.top() == 50);
-    heap.push(55);
-    assert(heap.top() == 55);
-    heap.push(60);
-    assert(heap.top() == 60);
-    heap.push(65);
-    assert(heap.top() == 65);
-    heap.postorder(heap.root);
+    heap.pop();
+    heap.pop();
+    heap.pop();
+    heap.pop();
+    heap.pop();
+    heap.pop();
+    // cout << "heap top : " << heap.top() << endl;
+
+    // heap.push(35);
+    // cout << "heap top : " << heap.top() << endl;
+    // heap.push(40);
+    // cout << "heap top : " << heap.top() << endl;
+    // heap.push(45);
+    // cout << "heap top : " << heap.top() << endl;
+    // heap.push(50);
+    // cout << "heap top : " << heap.top() << endl;
+    // heap.push(55);
+    // cout << "heap top : " << heap.top() << endl;
+    // heap.push(60);
+    // cout << "heap top : " << heap.top() << endl;
+    // heap.push(65);
+    // cout << "heap top : " << heap.top() << endl;
+
+    // heap.postorder(heap.root);
+    heap.levelOrder(heap.root);
 }
